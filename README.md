@@ -1,1 +1,1 @@
-# simple-jwt
+# easy-jwt
