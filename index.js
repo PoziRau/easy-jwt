@@ -5,7 +5,7 @@ exports.sign = (json, secret, params) => {
     if (params == undefined) { params = {} }
 
     if (params.alg == null) { 
-        crypt = 'sha512', algorithm = 'HS512' 
+        crypt = 'sha256', algorithm = 'HS256' 
     } else { 
         algorithm = params.alg 
 
@@ -16,13 +16,13 @@ exports.sign = (json, secret, params) => {
         } else if (algorithm == 'HS512') { 
             crypt = 'sha512' 
         } else { 
-            throw new Error(JSON.stringify({ name: 'SignError', message: 'invalid algorithm type' })) 
+            throw new Error(JSON.stringify({ name: 'SignError', message: 'invalid algorithm' }, null, 3)) 
         }
     }
 
     if (params.expireDate == null) { expiry = -1 } else { expiry = params.expireDate }
-    if (json == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'data is required' })) }
-    if (secret == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'secret is required' })) }
+    if (json == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'payload is required' }, null, 3)) }
+    if (secret == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'secret is required' }, null, 3)) }
 
     header = { alg: algorithm, typ: "JWT", expireDate: expiry}
     return btoa(JSON.stringify(header)) + '.' + btoa(JSON.stringify(json)) + '.' + crypto.createHmac(crypt, secret).update(JSON.stringify(header) + JSON.stringify(json)).digest("base64");
@@ -34,9 +34,9 @@ exports.verify = (data, secret, options) => {
 
     if (options.maxAge != null) { maxAge = options.maxAge } else { maxAge = 0 }
 
-    if (data.includes(".", 3)) { var data = data.split('.') } else { throw new Error(JSON.stringify({ name: 'TokenError', message: 'incorrect token format' })) }
+    if (data.includes(".", 3)) { var data = data.split('.') } else { throw new Error(JSON.stringify({ name: 'TokenError', message: 'incorrect token format' }, null, 3)) }
 
-    if (secret == null) { throw new Error(JSON.stringify({ name: 'TokenError', message: 'secret is required' })) }
+    if (secret == null) { throw new Error(JSON.stringify({ name: 'TokenError', message: 'secret is required' }, null, 3)) }
 
     newdata = JSON.parse(atob(data[0]))
 
@@ -47,7 +47,7 @@ exports.verify = (data, secret, options) => {
     } else if (newdata.alg == 'HS512') { 
         crypt = 'sha512' 
     } else { 
-        throw new Error(JSON.stringify({ name: 'TokenError', message: 'invalid algorithm type' })) 
+        throw new Error(JSON.stringify({ name: 'TokenError', message: 'invalid algorithm' }, null, 3)) 
     }
 
     if (data[2] == crypto.createHmac(crypt, secret).update(atob(data[0]) + atob(data[1])).digest("base64")) {
@@ -63,10 +63,10 @@ exports.verify = (data, secret, options) => {
             }
 
         } else {
-            throw new Error(JSON.stringify({ name: 'TokenExpired', message: 'token expired' }))
+            throw new Error(JSON.stringify({ name: 'TokenError', message: 'token expired' }, null, 3))
         }
 
     } else {
-        throw new Error(JSON.stringify({ name: 'TokenError', message: 'invalid token signature' }))
+        throw new Error(JSON.stringify({ name: 'TokenError', message: 'invalid token signature' }, null, 3))
     }
 }
