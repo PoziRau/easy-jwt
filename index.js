@@ -1,6 +1,9 @@
 const crypto = require("crypto");
 
-exports.sign = (json, params) => {
+exports.sign = (json, secret, params) => {
+
+    if (params == undefined) { params = {} }
+
     if (params.alg == null) { 
         crypt = 'sha512', algorithm = 'HS512' 
     } else { 
@@ -17,12 +20,12 @@ exports.sign = (json, params) => {
         }
     }
 
-    if (params.expires == null) { expiry = -1 } else { expiry = params.expires }
+    if (params.expireDate == null) { expiry = -1 } else { expiry = params.expireDate }
     if (json == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'data is required' })) }
-    if (params.secret == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'secret is required' })) }
-    
-    header = { alg: algorithm, typ: "JWT", expires: expiry}
-    return btoa(JSON.stringify(header)) + '.' + btoa(JSON.stringify(json)) + '.' + crypto.createHmac(crypt, params.secret).update(JSON.stringify(header) + JSON.stringify(json)).digest("base64");
+    if (secret == null) { throw new Error(JSON.stringify({ name: 'SignError', message: 'secret is required' })) }
+
+    header = { alg: algorithm, typ: "JWT", expireDate: expiry}
+    return btoa(JSON.stringify(header)) + '.' + btoa(JSON.stringify(json)) + '.' + crypto.createHmac(crypt, secret).update(JSON.stringify(header) + JSON.stringify(json)).digest("base64");
 }
 
 exports.verify = (data, secret, options) => {
@@ -49,7 +52,7 @@ exports.verify = (data, secret, options) => {
 
     if (data[2] == crypto.createHmac(crypt, secret).update(atob(data[0]) + atob(data[1])).digest("base64")) {
 
-        expired = JSON.parse(atob(data[0]).toString('ascii')).expires
+        expired = JSON.parse(atob(data[0]).toString('ascii')).expireDate
 
         if (expired + maxAge >= Date.now() || expired == -1 || options.ignoreExpiration == true) {
             
