@@ -21,7 +21,7 @@ npm install easy-jwt
 
 ## Usage
 
-### [JWT Sign](https://pozirau.github.io/easy-jwt/)
+### JWT Sign
 
 ```js
 jwt.sign(payload, secret_key, [options])
@@ -46,7 +46,7 @@ var secret = fs.readFileSync('secret.key')
 jwt.sign({ foo: 'bar' }, secret, { alg: 'HS256', expires: Date.now() + 3600000 })
 ```
 
-### [JWT Verify](https://pozirau.github.io/easy-jwt/)
+### JWT Verify
 
 ```js
 jwt.verify(payload, secret_key, [options])
