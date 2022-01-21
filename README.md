@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://pozirau.github.io/easy-jwt/">
-    <img src="json.png" alt="json logo" width="170" height="62">
+    <img src="https://pozirau.github.io/easy-jwt/json.png" alt="json logo" width="170" height="62">
   </a>
 </p>
 
