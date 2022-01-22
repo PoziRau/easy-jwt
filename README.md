@@ -1,7 +1,5 @@
 <p align="center">
-  <a href="https://pozirau.github.io/easy-jwt/">
-    <img src="https://pozirau.github.io/easy-jwt/json.png" alt="json logo" width="255" height="93">
-  </a>
+<img src="https://pozirau.github.io/easy-jwt/json.png" alt="json logo" width="255" height="93">
 </p>
 
 <h3 align="center">Easy JWT</h3>
@@ -9,7 +7,6 @@
 <p align="center">
   A lightweght JSON Web Token library for node.js
   <br>
-  <a href="https://pozirau.github.io/easy-jwt/"><strong>Documentation</strong></a>
   <br>
 </p>
 
