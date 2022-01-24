@@ -48,7 +48,7 @@ const sign = (
 const verify = (
   data: string = '',
   secret: crypto.BinaryLike | crypto.KeyObject | null,
-  options: { maxAge?: any; ignoreExpiration?: any; complete?: any } = { maxAge: 0 }
+  options: { maxAge?: number; ignoreExpiration?: boolean; complete?: boolean } = { maxAge: 0 }
 ) => {
   let maxAge = options?.maxAge ?? 0
 
@@ -75,6 +75,7 @@ const verify = (
   const header = JSON.parse(Buffer.from(rawHeader ?? '', 'base64').toString())
   const payload = JSON.parse(Buffer.from(rawPayload ?? '', 'base64').toString())
 
+  const expired = header?.expireDate
   const algorithm = header?.alg ?? 'HS256'
 
   if (algorithm === 'HS384') {
@@ -86,26 +87,24 @@ const verify = (
   }
 
   if (
-    signature ===
+    signature !==
     removeBase64Padding(
       crypto.createHmac(crypt, secret).update(`${rawHeader}.${rawPayload}`).digest('base64')
     )
   ) {
-    const expired = header.expireDate
-
-    if (expired + maxAge >= Date.now() || expired === -1 || options.ignoreExpiration === true) {
-      if (options.complete === true) {
-        return { header, payload }
-      } else {
-        return payload
-      }
-    } else {
-      throw new Error(JSON.stringify({ name: 'TokenError', message: 'Token expired' }, null, 2))
-    }
-  } else {
     throw new Error(
       JSON.stringify({ name: 'TokenError', message: 'Invalid token signature' }, null, 2)
     )
+  }
+
+  if (expired + maxAge >= Date.now() || expired === -1 || options?.ignoreExpiration) {
+    if (options?.complete) {
+      return { header, payload }
+    } else {
+      return payload
+    }
+  } else {
+    throw new Error(JSON.stringify({ name: 'TokenError', message: 'Token expired' }, null, 2))
   }
 }
 
