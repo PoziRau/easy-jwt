@@ -21,9 +21,9 @@ const sign = (
 
   let crypt = 'sha256'
 
-  if (algorithm == 'HS384') {
+  if (algorithm === 'HS384') {
     crypt = 'sha384'
-  } else if (algorithm == 'HS512') {
+  } else if (algorithm === 'HS512') {
     crypt = 'sha512'
   } else if (algorithm !== 'HS256') {
     throw new Error(JSON.stringify({ name: 'SignError', message: 'Invalid algorithm' }, null, 2))
@@ -77,9 +77,9 @@ const verify = (
 
   const algorithm = header?.alg ?? 'HS256'
 
-  if (algorithm == 'HS384') {
+  if (algorithm === 'HS384') {
     crypt = 'sha384'
-  } else if (algorithm == 'HS512') {
+  } else if (algorithm === 'HS512') {
     crypt = 'sha512'
   } else if (algorithm !== 'HS256') {
     throw new Error(JSON.stringify({ name: 'TokenError', message: 'Invalid algorithm' }, null, 2))
@@ -93,8 +93,8 @@ const verify = (
   ) {
     const expired = header.expireDate
 
-    if (expired + maxAge >= Date.now() || expired == -1 || options.ignoreExpiration == true) {
-      if (options.complete == true) {
+    if (expired + maxAge >= Date.now() || expired === -1 || options.ignoreExpiration === true) {
+      if (options.complete === true) {
         return { header, payload }
       } else {
         return payload
