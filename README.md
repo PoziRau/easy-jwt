@@ -43,7 +43,7 @@ jwt.sign(payload, secret_key, [options])
 ```js
 // Sign using SHA-256 with 1 hour expiry
 var secret = fs.readFileSync('secret.key')
-jwt.sign({ foo: 'bar' }, secret, { alg: 'HS256', expires: Date.now() + 3600000 })
+jwt.sign({ foo: 'bar' }, secret, { alg: 'HS256', expireDate: Date.now() + 3600000 })
 ```
 
 ### JWT Verify
